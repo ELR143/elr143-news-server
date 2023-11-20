@@ -23,7 +23,10 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        body.forEach((topic) => {
+        expect(body.topics.length).not.toBe(0);
+        body.topics.forEach((topic) => {
+          expect(topic).toHaveProperty("slug");
+          expect(topic).toHaveProperty("description");
           expect(typeof topic.slug).toBe("string");
           expect(typeof topic.description).toBe("string");
         });
