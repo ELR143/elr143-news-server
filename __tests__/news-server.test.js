@@ -43,6 +43,7 @@ describe("GET /api/topics", () => {
   });
 });
 
+
 describe("GET /api", () => {
   test("200: responds with an object which describes all available endpoints", () => {
     return request(app)
@@ -61,3 +62,4 @@ describe("GET /api", () => {
       });
   });
 });
+

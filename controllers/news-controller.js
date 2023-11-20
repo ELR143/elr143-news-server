@@ -1,3 +1,4 @@
+
 const { selectAllTopics, describeApi } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -15,3 +16,4 @@ exports.getApi = (req, res, next) => {
     })
     .catch(next);
 };
+
