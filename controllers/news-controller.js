@@ -1,4 +1,5 @@
-const { selectAllTopics } = require("../models/news-model");
+
+const { selectAllTopics, describeApi } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
   selectAllTopics()
@@ -7,3 +8,12 @@ exports.getAllTopics = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.getApi = (req, res, next) => {
+  describeApi()
+    .then((endpointsData) => {
+      res.status(200).send({ endpoints: endpointsData });
+    })
+    .catch(next);
+};
+

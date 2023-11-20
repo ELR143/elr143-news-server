@@ -42,3 +42,24 @@ describe("GET /api/topics", () => {
       });
   });
 });
+
+
+describe("GET /api", () => {
+  test("200: responds with an object which describes all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const properties = Object.values(body.endpoints);
+        properties.forEach((endpoint) => {
+          expect(endpoint).toHaveProperty("description");
+          expect(endpoint).toHaveProperty("queries");
+          expect(endpoint).toHaveProperty("exampleResponse");
+          expect(typeof endpoint.description).toBe("string");
+          expect(Array.isArray(endpoint.queries)).toBe(true);
+          expect(typeof endpoint.exampleResponse).toBe("object");
+        });
+      });
+  });
+});
+
