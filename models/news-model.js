@@ -5,3 +5,7 @@ exports.selectAllTopics = () => {
     return topics.rows;
   });
 };
+
+exports.selectArticleById = () => {
+  
+}
