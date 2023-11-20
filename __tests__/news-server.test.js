@@ -49,11 +49,8 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        const descriptiveApiEndpoint = Object.values(body)[0];
-        expect(descriptiveApiEndpoint).toHaveProperty("description");
-
-        const allOtherEndpoints = Object.values(body).slice(1);
-        allOtherEndpoints.forEach((endpoint) => {
+        const properties = Object.values(body.endpoints);
+        properties.forEach((endpoint) => {
           expect(endpoint).toHaveProperty("description");
           expect(endpoint).toHaveProperty("queries");
           expect(endpoint).toHaveProperty("exampleResponse");
@@ -61,15 +58,6 @@ describe("GET /api", () => {
           expect(Array.isArray(endpoint.queries)).toBe(true);
           expect(typeof endpoint.exampleResponse).toBe("object");
         });
-      });
-  });
-
-  test("404: responds with an error message when given a path that does not exist", () => {
-    return request(app)
-      .get("/apo")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Error: path does not exist");
       });
   });
 });

@@ -9,7 +9,9 @@ exports.getAllTopics = (req, res, next) => {
 };
 
 exports.getApi = (req, res, next) => {
-  describeApi().then((endpointsData) => {
-    res.status(200).send(endpointsData);
-  });
+  describeApi()
+    .then((endpointsData) => {
+      res.status(200).send({ endpoints: endpointsData });
+    })
+    .catch(next);
 };
