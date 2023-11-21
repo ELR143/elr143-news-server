@@ -51,7 +51,7 @@ describe("GET /api/articles", () => {
         expect(body.article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
-          article_id: expect.any(Number),
+          article_id: 1,
           body: expect.any(String),
           topic: expect.any(String),
           created_at: expect.any(String),
@@ -66,6 +66,14 @@ describe("GET /api/articles", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 400 bad request");
+      });
+  });
+  test("404: responds with an error message when given a valid path but the id doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
       });
   });
 });
