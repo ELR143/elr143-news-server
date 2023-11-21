@@ -11,12 +11,11 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/topics", getAllTopics);
-
 app.get("/api/articles/:article_id", getArticleById);
-
 app.get("/api", getApi);
-
 app.get("/api/articles", getAllArticles);
+
+app.post('/api/articles/:article_id/comments')
 
 app.all("*", pathDoesNotExist);
 

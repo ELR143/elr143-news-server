@@ -39,3 +39,7 @@ exports.countComments = () => {
       return Promise.all(commentCounts.rows);
     });
 };
+
+exports.createNewComment = () => {
+  console.log('hello from model')
+}

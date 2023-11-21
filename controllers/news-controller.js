@@ -52,3 +52,7 @@ exports.getAllArticles = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postNewComment = (req, res, next) => {
+  console.log('hello from controller')
+}

@@ -131,3 +131,7 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test.todo('200: posts a new comment for a given article_id, and responds with the comment')
+})
