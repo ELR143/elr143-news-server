@@ -42,7 +42,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/articles", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200: responds with an article selected by its id, inputted by the user", () => {
     return request(app)
       .get("/api/articles/1")
