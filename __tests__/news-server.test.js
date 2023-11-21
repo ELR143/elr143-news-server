@@ -2,6 +2,7 @@ const app = require("../app");
 const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
+const sort = require("jest-sorted");
 const {
   articleData,
   commentData,
@@ -116,8 +117,15 @@ describe("GET /api/articles/:article_id/comments", () => {
             article_id: expect.any(Number),
           });
         });
-        expect(body.comments[0].comment_id).toBe(5); //return here to replace with jest sorted
+        expect(body.comments).toBeSortedBy('created_at', {descending: true})
       });
   });
-  test.todo("400: responds with an error message if passed an invalid id");
+  test("404: responds with an error message if passed an id that does not exist", () => {
+    return request(app)
+    .get('/api/articles/99999/comments')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe('Error: 404 not found')
+    })
+  });
 });
