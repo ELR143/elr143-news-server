@@ -21,3 +21,12 @@ exports.selectArticleById = (id) => {
     return article.rows[0];
   });
 };
+
+//merge 5 here
+
+exports.selectCommentsByArticleId = (id) => {
+  const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`;
+  return db.query(query, [id]).then((articleComments) => {
+    return articleComments.rows;
+  });
+};

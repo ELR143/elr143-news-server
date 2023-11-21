@@ -96,3 +96,28 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+//merge 5 here
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).not.toBe(0);
+        body.comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          });
+        });
+        expect(body.comments[0].comment_id).toBe(5); //return here to replace with jest sorted
+      });
+  });
+  test.todo("400: responds with an error message if passed an invalid id");
+});

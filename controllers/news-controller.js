@@ -2,6 +2,7 @@ const {
   selectAllTopics,
   describeApi,
   selectArticleById,
+  selectCommentsByArticleId,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -25,6 +26,17 @@ exports.getArticleById = (req, res, next) => {
   selectArticleById(article_id)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch(next);
+};
+
+// merge 5 here
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  selectCommentsByArticleId(article_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };
