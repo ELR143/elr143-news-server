@@ -3,6 +3,7 @@ const {
   getAllTopics,
   getArticleById,
   getApi,
+  getAllArticles,
 } = require("./controllers/news-controller");
 const { pathDoesNotExist, handleCustomErrors } = require("./errors");
 
@@ -14,6 +15,8 @@ app.get("/api/topics", getAllTopics);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api", getApi);
+
+app.get("/api/articles", getAllArticles);
 
 app.all("*", pathDoesNotExist);
 
