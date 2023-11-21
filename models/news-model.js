@@ -1,10 +1,15 @@
 const db = require("../db/connection");
 const format = require("pg-format");
+const endpoints = require("../endpoints.json");
 
 exports.selectAllTopics = () => {
   return db.query(`SELECT * FROM topics;`).then((topics) => {
     return topics.rows;
   });
+};
+
+exports.describeApi = () => {
+  return Promise.resolve(endpoints);
 };
 
 exports.selectArticleById = (id) => {
@@ -15,4 +20,3 @@ exports.selectArticleById = (id) => {
     }
     return article.rows[0];
   });
-};

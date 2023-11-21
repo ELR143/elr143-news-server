@@ -5,3 +5,4 @@ exports.handleCustomErrors = (err, req, res, next) => {
 exports.pathDoesNotExist = (req, res) => {
   res.status(404).send({ msg: "Error: 404 not found" });
 };
+
