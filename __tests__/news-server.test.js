@@ -2,6 +2,7 @@ const app = require("../app");
 const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
+const sort = require("jest-sorted");
 const {
   articleData,
   commentData,
@@ -115,7 +116,9 @@ describe("GET /api/articles", () => {
             article_img_url: expect.any(String),
             comment_count: expect.any(Number),
           });
-          expect(body.articles[0].article_id).toBe(3);
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
         });
       });
   });

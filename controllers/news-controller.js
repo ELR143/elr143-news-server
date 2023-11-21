@@ -40,13 +40,11 @@ exports.getAllArticles = (req, res, next) => {
         current[comment.article_id] = parseInt(comment.count);
         return current;
       }, {});
-      console.log(commentReference);
       const updatedArticle = articles.map((article) => {
         delete article.body;
         const commentCount = commentReference[article.article_id];
         return { ...article, comment_count: commentCount || 0 };
       });
-      console.log(updatedArticle);
       return updatedArticle;
     })
     .then((updatedArticles) => {
