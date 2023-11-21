@@ -2,6 +2,7 @@ const app = require("../app");
 const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
+
 const {
   articleData,
   commentData,
@@ -90,6 +91,40 @@ describe("GET /api/articles/:article_id", () => {
   test("404: responds with an error message when given a valid path but the id doesn't exist", () => {
     return request(app)
       .get("/api/articles/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("200: responds with an array of articles sorted by the newest first", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).not.toBe(0);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+      });
+  });
+  test("404: responds with an error message when path is misspelled", () => {
+    return request(app)
+      .get("/api/artecles")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");

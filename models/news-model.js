@@ -21,3 +21,21 @@ exports.selectArticleById = (id) => {
     return article.rows[0];
   });
 };
+
+exports.selectAllArticles = () => {
+  return db
+    .query(`SELECT * FROM articles ORDER BY created_at DESC;`)
+    .then((articles) => {
+      return articles.rows;
+    });
+};
+
+exports.countComments = () => {
+  return db
+    .query(
+      `SELECT article_id, COUNT (article_id) FROM comments GROUP BY article_id;`
+    )
+    .then((commentCounts) => {
+      return Promise.all(commentCounts.rows);
+    });
+};
