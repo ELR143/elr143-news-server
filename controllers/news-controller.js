@@ -1,6 +1,8 @@
-
-
-const { selectAllTopics, describeApi, selectArticleById } = require("../models/news-model");
+const {
+  selectAllTopics,
+  describeApi,
+  selectArticleById,
+} = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
   selectAllTopics()
