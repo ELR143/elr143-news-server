@@ -4,6 +4,8 @@ const {
   selectArticleById,
   selectAllArticles,
   countComments,
+  insertNewComment,
+  insertNewUser,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -34,6 +36,7 @@ exports.getArticleById = (req, res, next) => {
 exports.getAllArticles = (req, res, next) => {
   const comments = countComments();
   const articles = selectAllArticles();
+
   Promise.all([comments, articles])
     .then(([comments, articles]) => {
       const commentReference = comments.reduce((current, comment) => {
@@ -52,7 +55,18 @@ exports.getAllArticles = (req, res, next) => {
     })
     .catch(next);
 };
-
+//merge 6 here
 exports.postNewComment = (req, res, next) => {
-  console.log('hello from controller')
-}
+  const newPostBody = req.body;
+  const username = newPostBody.username;
+  const { article_id } = req.params;
+
+  insertNewUser(username)
+    .then(() => {
+      return insertNewComment(newPostBody, article_id);
+    })
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};

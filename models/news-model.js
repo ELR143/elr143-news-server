@@ -39,7 +39,21 @@ exports.countComments = () => {
       return Promise.all(commentCounts.rows);
     });
 };
+//merge 6 here
+exports.insertNewUser = (username) => {
+  const query =
+    "INSERT INTO users (username, name) VALUES ($1, 'placeholderName') RETURNING *;";
+  return db.query(query, [username]).then((user) => {
+    return user.rows[0];
+  });
+};
 
-exports.createNewComment = () => {
-  console.log('hello from model')
-}
+exports.insertNewComment = (newComment, article_id) => {
+  const { username, body } = newComment;
+  const author = username;
+  const query =
+    "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
+  return db.query(query, [body, author, article_id]).then((post) => {
+    return post.rows[0];
+  });
+};

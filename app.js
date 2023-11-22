@@ -4,6 +4,7 @@ const {
   getArticleById,
   getApi,
   getAllArticles,
+  postNewComment,
 } = require("./controllers/news-controller");
 const { pathDoesNotExist, handleCustomErrors } = require("./errors");
 
@@ -14,8 +15,9 @@ app.get("/api/topics", getAllTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api", getApi);
 app.get("/api/articles", getAllArticles);
+//merge 6 here
 
-app.post('/api/articles/:article_id/comments')
+app.post("/api/articles/:article_id/comments", postNewComment);
 
 app.all("*", pathDoesNotExist);
 

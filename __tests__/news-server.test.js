@@ -132,6 +132,43 @@ describe("GET /api/articles", () => {
   });
 });
 
-describe('POST /api/articles/:article_id/comments', () => {
-  test.todo('200: posts a new comment for a given article_id, and responds with the comment')
-})
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: posts a new comment for a given article_id, and responds with the comment", () => {
+    const testPost = {
+      username: "testUser",
+      body: "This is a test!",
+    };
+
+    const testPostExpected = {
+      comment_id: expect.any(Number),
+      votes: 0,
+      created_at: expect.any(String),
+      author: "testUser",
+      body: "This is a test!",
+      article_id: 3,
+    };
+
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(testPost)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(testPostExpected);
+        expect(body.comment.article_id).toBe(3);
+      });
+  });
+  test.todo(
+    "400: responds with an error message if passed an invalid article_id"
+  );
+  test.todo(
+    "404: responds with an error message if passed a valid article_id that does not exist"
+  );
+  test.todo(
+    "400: responds with an error message if comment is passed with missing/required fields"
+  );
+  test.todo(
+    "400: responds with an error message if comment does not follow required format"
+  );
+});
+
+// add to JSON
