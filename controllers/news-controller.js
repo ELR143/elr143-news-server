@@ -1,9 +1,11 @@
+const { checkExists } = require("../models/utils-model");
 const {
   selectAllTopics,
   describeApi,
   selectArticleById,
-  selectAllArticles,
   countComments,
+  selectAllArticles,
+  selectCommentsByArticleId,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -49,6 +51,20 @@ exports.getAllArticles = (req, res, next) => {
     })
     .then((updatedArticles) => {
       res.status(200).send({ articles: updatedArticles });
+    })
+    .catch(next);
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+
+  const commentsCheck = checkExists("articles", "article_id", article_id);
+
+  const pendingComments = selectCommentsByArticleId(article_id);
+
+  Promise.all([pendingComments, commentsCheck])
+    .then(([resolvedPromises]) => {
+      res.status(200).send({ comments: resolvedPromises });
     })
     .catch(next);
 };

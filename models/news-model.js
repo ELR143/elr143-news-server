@@ -39,3 +39,10 @@ exports.countComments = () => {
       return Promise.all(commentCounts.rows);
     });
 };
+
+exports.selectCommentsByArticleId = (id) => {
+  const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`;
+  return db.query(query, [id]).then((articleComments) => {
+    return articleComments.rows;
+  });
+};
