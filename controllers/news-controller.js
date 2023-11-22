@@ -36,12 +36,14 @@ exports.getArticleById = (req, res, next) => {
 exports.getAllArticles = (req, res, next) => {
   const comments = countComments();
   const articles = selectAllArticles();
+
   Promise.all([comments, articles])
     .then(([comments, articles]) => {
       const commentReference = comments.reduce((current, comment) => {
         current[comment.article_id] = parseInt(comment.count);
         return current;
       }, {});
+
       const updatedArticle = articles.map((article) => {
         delete article.body;
         const commentCount = commentReference[article.article_id];
@@ -57,9 +59,7 @@ exports.getAllArticles = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-
   const commentsCheck = checkExists("articles", "article_id", article_id);
-
   const pendingComments = selectCommentsByArticleId(article_id);
 
   Promise.all([pendingComments, commentsCheck])
