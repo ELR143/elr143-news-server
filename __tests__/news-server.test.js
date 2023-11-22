@@ -130,6 +130,7 @@ describe("GET /api/articles", () => {
         expect(body.msg).toBe("Error: 404 not found");
       });
   });
+});
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an empty array if article_id is valid but has no associated comments", () => {
@@ -168,6 +169,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
       });
+  });
   test("400: responds with an error message if given an article_id that is invalid", () => {
     return request(app)
       .get("/api/articles/notAnId/comments")
@@ -176,4 +178,4 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Error: 400 bad request");
       });
   });
-
+});
