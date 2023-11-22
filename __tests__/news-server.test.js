@@ -80,7 +80,7 @@ describe("GET /api/articles/:article_id", () => {
         });
       });
   });
-  test("400: responds with an error message when given a path that is invalid", () => {
+  test("400: responds with an error message when given an article_id that is invalid", () => {
     return request(app)
       .get("/api/articles/notAnId")
       .expect(400)
@@ -101,6 +101,15 @@ describe("GET /api/articles/:article_id", () => {
 //merge 5 here
 
 describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an empty array if article_id is valid but has no associated comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body);
+        expect(body.comments).toEqual([]);
+      });
+  });
   test("200: responds with an array of comments for the given article_id", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -108,6 +117,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body.comments.length).not.toBe(0);
         body.comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
             votes: expect.any(Number),
@@ -126,6 +136,14 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
+  test("400: responds with an error message if given an article_id that is invalid", () => {
+    return request(app)
+      .get("/api/articles/notAnId/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 400 bad request");
       });
   });
 });

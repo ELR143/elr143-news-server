@@ -27,9 +27,7 @@ exports.selectArticleById = (id) => {
 exports.selectCommentsByArticleId = (id) => {
   const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`;
   return db.query(query, [id]).then((articleComments) => {
-    if (articleComments.rows.length === 0) {
-      return Promise.reject();
-    }
+    console.log(articleComments.rows);
     return articleComments.rows;
   });
 };

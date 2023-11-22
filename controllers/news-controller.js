@@ -1,3 +1,4 @@
+const { checkExists } = require("../models/utils-model");
 const {
   selectAllTopics,
   describeApi,
@@ -34,9 +35,14 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  selectCommentsByArticleId(article_id)
-    .then((comments) => {
-      res.status(200).send({ comments });
+
+  const commentsCheck = checkExists("articles", "article_id", article_id);
+
+  const pendingComments = selectCommentsByArticleId(article_id);
+
+  Promise.all([pendingComments, commentsCheck])
+    .then(([resolvedPromises]) => {
+      res.status(200).send({ comments: resolvedPromises });
     })
     .catch(next);
 };
