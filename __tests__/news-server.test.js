@@ -98,7 +98,38 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-//merge 5 here
+describe("GET /api/articles", () => {
+  test("200: responds with an array of articles sorted by the newest first", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).not.toBe(0);
+        body.articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+          });
+        });
+      });
+  });
+  test("404: responds with an error message when path is misspelled", () => {
+    return request(app)
+      .get("/api/artecles")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an empty array if article_id is valid but has no associated comments", () => {
@@ -137,7 +168,6 @@ describe("GET /api/articles/:article_id/comments", () => {
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
       });
-  });
   test("400: responds with an error message if given an article_id that is invalid", () => {
     return request(app)
       .get("/api/articles/notAnId/comments")
@@ -146,4 +176,4 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Error: 400 bad request");
       });
   });
-});
+

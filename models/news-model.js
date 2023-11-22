@@ -22,7 +22,23 @@ exports.selectArticleById = (id) => {
   });
 };
 
-//merge 5 here
+exports.selectAllArticles = () => {
+  return db
+    .query(`SELECT * FROM articles ORDER BY created_at DESC;`)
+    .then((articles) => {
+      return articles.rows;
+    });
+};
+
+exports.countComments = () => {
+  return db
+    .query(
+      `SELECT article_id, COUNT (article_id) FROM comments GROUP BY article_id;`
+    )
+    .then((commentCounts) => {
+      return Promise.all(commentCounts.rows);
+    });
+};
 
 exports.selectCommentsByArticleId = (id) => {
   const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`;

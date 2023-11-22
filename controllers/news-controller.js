@@ -3,6 +3,8 @@ const {
   selectAllTopics,
   describeApi,
   selectArticleById,
+  countComments,
+  selectAllArticles,
   selectCommentsByArticleId,
 } = require("../models/news-model");
 
@@ -31,7 +33,27 @@ exports.getArticleById = (req, res, next) => {
     .catch(next);
 };
 
-// merge 5 here
+exports.getAllArticles = (req, res, next) => {
+  const comments = countComments();
+  const articles = selectAllArticles();
+  Promise.all([comments, articles])
+    .then(([comments, articles]) => {
+      const commentReference = comments.reduce((current, comment) => {
+        current[comment.article_id] = parseInt(comment.count);
+        return current;
+      }, {});
+      const updatedArticle = articles.map((article) => {
+        delete article.body;
+        const commentCount = commentReference[article.article_id];
+        return { ...article, comment_count: commentCount || 0 };
+      });
+      return updatedArticle;
+    })
+    .then((updatedArticles) => {
+      res.status(200).send({ articles: updatedArticles });
+    })
+    .catch(next);
+};
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
