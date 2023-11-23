@@ -138,7 +138,6 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/2/comments")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.comments).toEqual([]);
       });
   });
@@ -179,3 +178,36 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe('PATCH /api/articles/:article_id', () => {
+  test('200: increments votes with a positive number and responds with the updated article', () => {
+    const testPatch = { inc_votes: 5}
+
+    return request(app)
+    .patch('/api/articles/1')
+    .send(testPatch)
+    .expect(200)
+    .then(({body}) => {
+      console.log(body)
+      expect(body.article).toMatchObject({
+        author: expect.any(String),
+        title: expect.any(String),
+        article_id: 1,
+        body: expect.any(String),
+        topic: expect.any(String),
+        created_at: expect.any(String),
+        votes: 105,
+        article_img_url: expect.any(String),
+      });
+    })
+  })
+  test.todo('200: increments votes with a negative number and responds with the updated article')
+  test.todo('200: increments votes with a negative number where |inc_votes| > current votes (votes should never be less than 0)')
+
+  describe('400 errors', () => {
+    test.todo('400: responds with an error message when request body is in the wrong format (empty)')
+    test.todo('400: responds with an error message when request body is in the wrong format (incorrect field)')
+    test.todo('400: responds with an error message when request body is in the wrong format (votes is NaN')
+  })
+})
+

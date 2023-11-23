@@ -5,6 +5,7 @@ const {
   getArticleById,
   getAllArticles,
   getCommentsByArticleId,
+  patchArticleById,
 } = require("./controllers/news-controller");
 const { pathDoesNotExist, handleCustomErrors } = require("./errors");
 
@@ -16,6 +17,8 @@ app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+
+app.patch("/api/articles/:article_id", patchArticleById);
 
 app.all("*", pathDoesNotExist);
 
