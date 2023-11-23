@@ -174,6 +174,8 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
   test("400: responds with an error message if given an article_id that is invalid", () => {
     return request(app)
       .get("/api/articles/notAnId/comments")
@@ -183,7 +185,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
-    
+
 describe("POST /api/articles/:article_id/comments", () => {
   test("201: posts a new comment for a given article_id, and responds with the comment", () => {
     const testPost = {

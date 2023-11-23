@@ -62,7 +62,7 @@
         }
       ]
     }
-  }
+  },
   "POST /api/articles/:article_id/comments": {
     "description": "posts a new comment to the given article_id",
     "queries": [],

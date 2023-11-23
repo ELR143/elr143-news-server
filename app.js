@@ -25,7 +25,6 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postNewComment);
 
 app.all("*", pathDoesNotExist);
-
 app.use(handleCustomErrors);
 app.use(handleServerErrors);
 

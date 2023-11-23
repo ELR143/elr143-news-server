@@ -74,5 +74,3 @@ exports.insertNewComment = (newComment, article_id) => {
       return post.rows[0];
     });
 };
-
-

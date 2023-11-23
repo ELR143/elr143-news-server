@@ -80,5 +80,3 @@ exports.postNewComment = (req, res, next) => {
     })
     .catch(next);
 };
-
-
