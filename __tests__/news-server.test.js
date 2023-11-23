@@ -253,10 +253,18 @@ describe("PATCH /api/articles/:article_id", () => {
           expect(body.msg).toBe("Error: 400 bad request");
         });
     });
+    test("400: responds with an error message if given an article_id that is invalid", () => {
+      return request(app)
+        .patch("/api/articles/notAnId")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: 400 bad request");
+        });
+    });
   });
   test("404: responds with an error message if passed an id that does not exist", () => {
     return request(app)
-      .get("/api/articles/55975433")
+      .patch("/api/articles/55975433")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
