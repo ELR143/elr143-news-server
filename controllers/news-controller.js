@@ -70,12 +70,13 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .catch(next);
 };
 
-
 exports.patchArticleById = (req, res, next) => {
-  const {article_id} = req.params;
-  const incrementVotes = req.body.inc_votes
+  const { article_id } = req.params;
+  const incrementVotes = req.body.inc_votes;
 
-  updateArticleById(incrementVotes, article_id).then((article) => {
-    res.status(200).send({article})
-  }).catch(next)
-}
+  updateArticleById(incrementVotes, article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
+};

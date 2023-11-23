@@ -188,7 +188,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .send(testPatch)
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
@@ -209,7 +208,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .send(testPatch)
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
@@ -244,21 +242,24 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 
   describe("400 errors", () => {
-    test(
-      "400: responds with an error message when request body is in the wrong format (empty)", () => {
-        const testPatch = {};
+    test("400: responds with an error message when request body is in the wrong format (empty)", () => {
+      const testPatch = {};
 
-        return request(app)
-        .patch('/api/articles/1')
+      return request(app)
+        .patch("/api/articles/1")
         .send(testPatch)
         .expect(400)
-        .then(({body}) => {
-          expect(body.msg).toBe('Error: 400 bad request')
-        })
-      }
-    );
-    test.todo(
-      "400: responds with an error message when request body is in the wrong format (votes is NaN)"
-    );
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: 400 bad request");
+        });
+    });
+  });
+  test("404: responds with an error message if passed an id that does not exist", () => {
+    return request(app)
+      .get("/api/articles/55975433")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
   });
 });
