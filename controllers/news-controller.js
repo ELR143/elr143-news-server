@@ -6,6 +6,7 @@ const {
   countComments,
   selectAllArticles,
   selectCommentsByArticleId,
+  insertNewComment,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -68,3 +69,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.postNewComment = (req, res, next) => {
+  const newComment = req.body;
+  const { article_id } = req.params;
+
+  insertNewComment(newComment, article_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
+
