@@ -65,9 +65,6 @@ exports.insertNewComment = (newComment, article_id) => {
       return db.query(query, [body, username, article_id]);
     })
     .then((post) => {
-      if (post.rows[0].length === 0) {
-        return Promise.reject({ status: 400, msg: "Error: 404 not found" });
-      }
       return post.rows[0];
     });
 };
