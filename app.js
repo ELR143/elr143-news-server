@@ -1,9 +1,10 @@
 const express = require("express");
 const {
   getAllTopics,
-  getArticleById,
   getApi,
+  getArticleById,
   getAllArticles,
+  getCommentsByArticleId,
   postNewComment,
 } = require("./controllers/news-controller");
 const {
@@ -16,10 +17,10 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/topics", getAllTopics);
-app.get("/api/articles/:article_id", getArticleById);
 app.get("/api", getApi);
+app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
-//merge 6 here
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", postNewComment);
 

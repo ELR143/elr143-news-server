@@ -39,7 +39,13 @@ exports.countComments = () => {
       return Promise.all(commentCounts.rows);
     });
 };
-//merge 6 here
+
+exports.selectCommentsByArticleId = (id) => {
+  const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`;
+  return db.query(query, [id]).then((articleComments) => {
+    return articleComments.rows;
+  });
+};
 
 exports.insertNewComment = (newComment, article_id) => {
   if (
@@ -68,3 +74,5 @@ exports.insertNewComment = (newComment, article_id) => {
       return post.rows[0];
     });
 };
+
+
