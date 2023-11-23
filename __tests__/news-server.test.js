@@ -157,18 +157,93 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.comment.article_id).toBe(3);
       });
   });
-  test.todo(
-    "400: responds with an error message if passed an invalid article_id"
-  );
-  test.todo(
-    "404: responds with an error message if passed a valid article_id that does not exist"
-  );
-  test.todo(
-    "400: responds with an error message if comment is passed with missing/required fields"
-  );
-  test.todo(
-    "400: responds with an error message if comment does not follow required format"
-  );
-});
+  describe("400 errors", () => {
+    test("400: responds with an error message if comment is passed with missing body", () => {
+      const testPost = {
+        username: "testUser",
+      };
 
-// add to JSON
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          {
+            expect(body.msg).toBe("Error: bad request");
+          }
+        });
+    });
+    test("400: responds with an error message if comment is passed with missing username", () => {
+      const testPost = {
+        body: "This is a test!",
+      };
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: bad request");
+        });
+    });
+    test("400: responds with an error message if comment does not follow required format (has extra fields)", () => {
+      const testPost = {
+        username: "testUser",
+        body: "This is a test!",
+        extra_field: "This should not be here!!",
+      };
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: bad request");
+        });
+    });
+    test("400: responds with an error message if comment does not follow required format (body field is incorrect)", () => {
+      const testPost = {
+        username: "testUser",
+        IAmNotABody: "This is a test!",
+      };
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: bad request");
+        });
+    });
+    test("400: responds with an error message if comment does not follow required format (username field is incorrect)", () => {
+      const testPost = {
+        IAmNotAUsername: "testUser",
+        body: "This is a test!",
+      };
+
+      return request(app)
+        .post("/api/articles/3/comments")
+        .send(testPost)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: bad request");
+        });
+    });
+    test("400: responds with an error message when given a path that is invalid", () => {
+      return request(app)
+        .get("/api/articles/notAnId")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: 400 bad request");
+        });
+    });
+  });
+  test("404: responds with an error message when given a valid path but the id doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/850")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
+});

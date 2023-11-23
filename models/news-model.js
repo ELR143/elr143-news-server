@@ -41,19 +41,32 @@ exports.countComments = () => {
 };
 //merge 6 here
 exports.insertNewUser = (username) => {
-  const query =
-    "INSERT INTO users (username, name) VALUES ($1, 'placeholderName') RETURNING *;";
-  return db.query(query, [username]).then((user) => {
-    return user.rows[0];
-  });
+  if (!username) {
+    return Promise.reject({ status: 400, msg: "Error: bad request" });
+  } else {
+    const query =
+      "INSERT INTO users (username, name) VALUES ($1, 'placeholderName') RETURNING *;";
+    return db.query(query, [username]).then((user) => {
+      return user.rows[0];
+    });
+  }
 };
 
 exports.insertNewComment = (newComment, article_id) => {
+  if (Object.keys(newComment).length !== 2) {
+    return Promise.reject({ status: 400, msg: "Error: bad request" });
+  }
+
   const { username, body } = newComment;
   const author = username;
-  const query =
-    "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
-  return db.query(query, [body, author, article_id]).then((post) => {
-    return post.rows[0];
-  });
+
+  if (!body) {
+    return Promise.reject({ status: 400, msg: "Error: bad request" });
+  } else {
+    const query =
+      "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
+    return db.query(query, [body, author, article_id]).then((post) => {
+      return post.rows[0];
+    });
+  }
 };

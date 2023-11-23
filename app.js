@@ -6,7 +6,11 @@ const {
   getAllArticles,
   postNewComment,
 } = require("./controllers/news-controller");
-const { pathDoesNotExist, handleCustomErrors } = require("./errors");
+const {
+  pathDoesNotExist,
+  handleCustomErrors,
+  handleServerErrors,
+} = require("./errors");
 
 const app = express();
 app.use(express.json());
@@ -22,5 +26,6 @@ app.post("/api/articles/:article_id/comments", postNewComment);
 app.all("*", pathDoesNotExist);
 
 app.use(handleCustomErrors);
+app.use(handleServerErrors);
 
 module.exports = app;
