@@ -5,7 +5,6 @@ const {
   selectAllArticles,
   countComments,
   insertNewComment,
-  insertNewUser,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -57,14 +56,10 @@ exports.getAllArticles = (req, res, next) => {
 };
 //merge 6 here
 exports.postNewComment = (req, res, next) => {
-  const newPostBody = req.body;
-  const username = newPostBody.username;
+  const newComment = req.body;
   const { article_id } = req.params;
 
-  insertNewUser(username)
-    .then(() => {
-      return insertNewComment(newPostBody, article_id);
-    })
+  insertNewComment(newComment, article_id)
     .then((comment) => {
       res.status(201).send({ comment });
     })

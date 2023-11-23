@@ -40,33 +40,32 @@ exports.countComments = () => {
     });
 };
 //merge 6 here
-exports.insertNewUser = (username) => {
-  if (!username) {
-    return Promise.reject({ status: 400, msg: "Error: bad request" });
-  } else {
-    const query =
-      "INSERT INTO users (username, name) VALUES ($1, 'placeholderName') RETURNING *;";
-    return db.query(query, [username]).then((user) => {
-      return user.rows[0];
-    });
-  }
-};
 
 exports.insertNewComment = (newComment, article_id) => {
-  if (Object.keys(newComment).length !== 2) {
-    return Promise.reject({ status: 400, msg: "Error: bad request" });
+  if (Object.keys(newComment).length < 2) {
+    return Promise.reject({ status: 400, msg: "Error: 400 bad request" });
   }
 
   const { username, body } = newComment;
-  const author = username;
+  const checkingUserQuery = `SELECT username FROM users WHERE username = $1;`;
 
-  if (!body) {
-    return Promise.reject({ status: 400, msg: "Error: bad request" });
-  } else {
-    const query =
-      "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
-    return db.query(query, [body, author, article_id]).then((post) => {
-      return post.rows[0];
+  return db
+    .query(checkingUserQuery, [username])
+    .then((authorsArray) => {
+      if (authorsArray.rows.length === 0) {
+        return Promise.reject();
+      }
+      return authorsArray.rows[0];
+    })
+    .then((user) => {
+      const { username } = user;
+      const query =
+        "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
+      return db.query(query, [body, username, article_id]).then((post) => {
+        if (post.rows[0].length === 0) {
+          return Promise.reject();
+        }
+        return post.rows[0];
+      });
     });
-  }
 };

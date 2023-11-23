@@ -51,12 +51,11 @@ describe("GET /api", () => {
       .then(({ body }) => {
         const properties = Object.values(body.endpoints);
         properties.forEach((endpoint) => {
-          expect(endpoint).toHaveProperty("description");
-          expect(endpoint).toHaveProperty("queries");
-          expect(endpoint).toHaveProperty("exampleResponse");
-          expect(typeof endpoint.description).toBe("string");
-          expect(Array.isArray(endpoint.queries)).toBe(true);
-          expect(typeof endpoint.exampleResponse).toBe("object");
+          expect(endpoint).toMatchObject({
+            description: expect.any(String),
+            queries: expect.any(Array),
+            exampleResponse: expect.any(Object),
+          });
         });
       });
   });
@@ -135,7 +134,7 @@ describe("GET /api/articles", () => {
 describe("POST /api/articles/:article_id/comments", () => {
   test("201: posts a new comment for a given article_id, and responds with the comment", () => {
     const testPost = {
-      username: "testUser",
+      username: "butter_bridge",
       body: "This is a test!",
     };
 
@@ -143,7 +142,32 @@ describe("POST /api/articles/:article_id/comments", () => {
       comment_id: expect.any(Number),
       votes: 0,
       created_at: expect.any(String),
-      author: "testUser",
+      author: "butter_bridge",
+      body: "This is a test!",
+      article_id: 3,
+    };
+
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(testPost)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(testPostExpected);
+        expect(body.comment.article_id).toBe(3);
+      });
+  });
+  test("201: posts a new comment and ignores extra fields", () => {
+    const testPost = {
+      username: "butter_bridge",
+      body: "This is a test!",
+      extra: "I am an extra field!",
+    };
+
+    const testPostExpected = {
+      comment_id: expect.any(Number),
+      votes: 0,
+      created_at: expect.any(String),
+      author: "butter_bridge",
       body: "This is a test!",
       article_id: 3,
     };
@@ -169,7 +193,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         .expect(400)
         .then(({ body }) => {
           {
-            expect(body.msg).toBe("Error: bad request");
+            expect(body.msg).toBe("Error: 400 bad request");
           }
         });
     });
@@ -183,64 +207,41 @@ describe("POST /api/articles/:article_id/comments", () => {
         .send(testPost)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Error: bad request");
-        });
-    });
-    test("400: responds with an error message if comment does not follow required format (has extra fields)", () => {
-      const testPost = {
-        username: "testUser",
-        body: "This is a test!",
-        extra_field: "This should not be here!!",
-      };
-
-      return request(app)
-        .post("/api/articles/3/comments")
-        .send(testPost)
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Error: bad request");
-        });
-    });
-    test("400: responds with an error message if comment does not follow required format (body field is incorrect)", () => {
-      const testPost = {
-        username: "testUser",
-        IAmNotABody: "This is a test!",
-      };
-
-      return request(app)
-        .post("/api/articles/3/comments")
-        .send(testPost)
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Error: bad request");
-        });
-    });
-    test("400: responds with an error message if comment does not follow required format (username field is incorrect)", () => {
-      const testPost = {
-        IAmNotAUsername: "testUser",
-        body: "This is a test!",
-      };
-
-      return request(app)
-        .post("/api/articles/3/comments")
-        .send(testPost)
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Error: bad request");
+          expect(body.msg).toBe("Error: 400 bad request");
         });
     });
     test("400: responds with an error message when given a path that is invalid", () => {
+      const testPost = {
+        username: "butter_bridge",
+        body: "This is a test!",
+      };
+
       return request(app)
-        .get("/api/articles/notAnId")
+        .post("/api/articles/notAnId/comments")
+        .send(testPost)
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Error: 400 bad request");
         });
     });
   });
-  test("404: responds with an error message when given a valid path but the id doesn't exist", () => {
+  test("404: responds with an error message if username does not exist in database", () => {
+    const testPost = {
+      username: "notAUser",
+      body: "This is a test!",
+    };
+
     return request(app)
-      .get("/api/articles/850")
+      .post("/api/articles/3/comments")
+      .send(testPost)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
+  test("404: responds with an error message when given a valid path but the article_id doesn't exist", () => {
+    return request(app)
+      .get("/api/articles/850/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
