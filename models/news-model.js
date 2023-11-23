@@ -42,7 +42,10 @@ exports.countComments = () => {
 //merge 6 here
 
 exports.insertNewComment = (newComment, article_id) => {
-  if (Object.keys(newComment).length < 2) {
+  if (
+    !Object.keys(newComment).includes("username") ||
+    !Object.keys(newComment).includes("body")
+  ) {
     return Promise.reject({ status: 400, msg: "Error: 400 bad request" });
   }
 
@@ -53,19 +56,20 @@ exports.insertNewComment = (newComment, article_id) => {
     .query(checkingUserQuery, [username])
     .then((authorsArray) => {
       if (authorsArray.rows.length === 0) {
-        return Promise.reject();
+        return Promise.reject({ status: 404, msg: "Error: 404 not found" });
       }
-      return authorsArray.rows[0];
+      return Promise.all(authorsArray.rows);
     })
-    .then((user) => {
-      const { username } = user;
+    .then((authors) => {
+      const { username } = authors[0];
       const query =
         "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
-      return db.query(query, [body, username, article_id]).then((post) => {
-        if (post.rows[0].length === 0) {
-          return Promise.reject();
-        }
-        return post.rows[0];
-      });
+      return db.query(query, [body, username, article_id]);
+    })
+    .then((post) => {
+      if (post.rows[0].length === 0) {
+        return Promise.reject({ status: 400, msg: "Error: 404 not found" });
+      }
+      return post.rows[0];
     });
 };
