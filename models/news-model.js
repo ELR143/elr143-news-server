@@ -58,10 +58,8 @@ exports.insertNewComment = (newComment, article_id) => {
       if (authorsArray.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Error: 404 not found" });
       }
-      return Promise.all(authorsArray.rows);
     })
-    .then((authors) => {
-      const { username } = authors[0];
+    .then(() => {
       const query =
         "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING*;";
       return db.query(query, [body, username, article_id]);
