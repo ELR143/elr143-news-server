@@ -138,7 +138,6 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/2/comments")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.comments).toEqual([]);
       });
   });
