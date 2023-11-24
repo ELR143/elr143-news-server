@@ -30,9 +30,17 @@ exports.getApi = (req, res, next) => {
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  selectArticleById(article_id)
-    .then((article) => {
-      res.status(200).send({ article });
+  const comments = countComments();
+  const article = selectArticleById(article_id);
+
+  Promise.all([comments, article])
+    .then(([comments, article]) => {
+      const commentCount = +comments[article.article_id] || 0;
+      const updatedArticle = { ...article, comment_count: commentCount };
+      return updatedArticle;
+    })
+    .then((updatedArticle) => {
+      res.status(200).send({ article: updatedArticle });
     })
     .catch(next);
 };
@@ -44,17 +52,12 @@ exports.getAllArticles = (req, res, next) => {
 
   Promise.all([comments, articles])
     .then(([comments, articles]) => {
-      const commentReference = comments.reduce((current, comment) => {
-        current[comment.article_id] = parseInt(comment.count);
-        return current;
-      }, {});
-
-      const updatedArticle = articles.map((article) => {
+      const updatedArticles = articles.map((article) => {
         delete article.body;
-        const commentCount = commentReference[article.article_id];
+        const commentCount = +comments[article.article_id];
         return { ...article, comment_count: commentCount || 0 };
       });
-      return updatedArticle;
+      return updatedArticles;
     })
     .then((updatedArticles) => {
       res.status(200).send({ articles: updatedArticles });
