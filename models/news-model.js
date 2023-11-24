@@ -98,3 +98,9 @@ exports.deleteCommentFromDatabase = (id) => {
     }
   });
 };
+
+exports.selectAllUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((usersArray) => {
+    return usersArray.rows;
+  });
+};

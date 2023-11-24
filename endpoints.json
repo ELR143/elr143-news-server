@@ -106,5 +106,18 @@
     "description": "deletes a comment with a given comment_id",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "username": "testUser",
+          "name": "Bob",
+          "avatar_url": "https://avatar_url_goes_here.com"
+        }
+      ]
+    }
   }
 }

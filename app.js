@@ -8,6 +8,7 @@ const {
   postNewComment,
   patchArticleById,
   deleteCommentById,
+  getAllUsers,
 } = require("./controllers/news-controller");
 const {
   pathDoesNotExist,
@@ -23,6 +24,7 @@ app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.get("/api/users", getAllUsers);
 
 app.post("/api/articles/:article_id/comments", postNewComment);
 app.patch("/api/articles/:article_id", patchArticleById);
