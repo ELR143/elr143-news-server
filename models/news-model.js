@@ -53,10 +53,17 @@ exports.selectAllArticles = (topic) => {
 exports.countComments = () => {
   return db
     .query(
-      `SELECT article_id, COUNT (article_id) FROM comments GROUP BY article_id;`
+      `SELECT article_id, COUNT(article_id) as comment_count FROM comments GROUP BY article_id;`
     )
     .then((commentCounts) => {
-      return Promise.all(commentCounts.rows);
+      const commentCountReference = commentCounts.rows.reduce(
+        (current, comment) => {
+          current[comment.article_id] = comment.comment_count;
+          return current;
+        },
+        {}
+      );
+      return commentCountReference;
     });
 };
 
