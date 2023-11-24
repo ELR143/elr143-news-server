@@ -9,6 +9,7 @@ const {
   insertNewComment,
   updateArticleById,
   deleteCommentFromDatabase,
+  selectAllUsers,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -99,6 +100,14 @@ exports.deleteCommentById = (req, res, next) => {
   deleteCommentFromDatabase(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch(next);
+};
+
+exports.getAllUsers = (req, res, next) => {
+  selectAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };
