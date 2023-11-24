@@ -6,6 +6,7 @@ const {
   getAllArticles,
   getCommentsByArticleId,
   postNewComment,
+  patchArticleById,
 } = require("./controllers/news-controller");
 const {
   pathDoesNotExist,
@@ -23,6 +24,9 @@ app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", postNewComment);
+app.patch("/api/articles/:article_id", patchArticleById);
+
+app.all("*", pathDoesNotExist);
 
 app.all("*", pathDoesNotExist);
 app.use(handleCustomErrors);

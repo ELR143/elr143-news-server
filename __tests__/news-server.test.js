@@ -265,7 +265,7 @@ describe("POST /api/articles/:article_id/comments", () => {
           expect(body.msg).toBe("Error: 400 bad request");
         });
     });
-    test("400: responds with an error message when given a path that is invalid", () => {
+     test("400: responds with an error message when given a path that is invalid", () => {
       const testPost = {
         username: "butter_bridge",
         body: "This is a test!",
@@ -297,6 +297,78 @@ describe("POST /api/articles/:article_id/comments", () => {
   test("404: responds with an error message when given a valid path but the article_id doesn't exist", () => {
     return request(app)
       .get("/api/articles/850/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200: increments votes with a positive number and responds with the updated article", () => {
+    const testPatch = { inc_votes: 5 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(testPatch)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: 1,
+          body: expect.any(String),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: 105,
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  test("200: increments votes with a negative number and responds with the updated article", () => {
+    const testPatch = { inc_votes: -110 };
+
+    return request(app)
+      .patch("/api/articles/1")
+      .send(testPatch)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: 1,
+          body: expect.any(String),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: -10,
+          article_img_url: expect.any(String),
+        });
+      });
+  });
+  describe("400 errors", () => {
+    test("400: responds with an error message when request body is in the wrong format (empty)", () => {
+      const testPatch = {};
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(testPatch)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: 400 bad request");
+        });
+    });
+    test("400: responds with an error message if given an article_id that is invalid", () => {
+      return request(app)
+        .patch("/api/articles/notAnId")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Error: 400 bad request");
+        });
+    });
+  });
+  test("404: responds with an error message if passed an id that does not exist", () => {
+    return request(app)
+      .patch("/api/articles/55975433")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");

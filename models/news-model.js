@@ -74,3 +74,13 @@ exports.insertNewComment = (newComment, article_id) => {
       return post.rows[0];
     });
 };
+
+exports.updateArticleById = (incrementVotes, id) => {
+  const query = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`;
+  return db.query(query, [incrementVotes, id]).then((article) => {
+    if (article.rows.length === 0) {
+      return Promise.reject();
+    }
+    return article.rows[0];
+  });
+};
