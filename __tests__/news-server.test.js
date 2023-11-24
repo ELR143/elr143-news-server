@@ -132,6 +132,14 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("200: responds with an empty array when topic exists but there are no associated articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toEqual([]);
+      });
+  });
   test("404: responds with an error message when query is invalid", () => {
     return request(app)
       .get("/api/articles?topic=banana")

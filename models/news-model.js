@@ -28,7 +28,7 @@ exports.selectAllArticles = (topic) => {
   let queryString = `SELECT * FROM articles `;
 
   if (topic) {
-    return checkExists("articles", "topic", topic)
+    return checkExists("topics", "slug", topic)
       .then((checkedTopic) => {
         if (!checkedTopic) {
           queryValues.push(topic);
