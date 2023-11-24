@@ -201,26 +201,6 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
   test("200: increments votes with a negative number and responds with the updated article", () => {
-    const testPatch = { inc_votes: -10 };
-
-    return request(app)
-      .patch("/api/articles/1")
-      .send(testPatch)
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.article).toMatchObject({
-          author: expect.any(String),
-          title: expect.any(String),
-          article_id: 1,
-          body: expect.any(String),
-          topic: expect.any(String),
-          created_at: expect.any(String),
-          votes: 90,
-          article_img_url: expect.any(String),
-        });
-      });
-  });
-  test("200: increments votes with a negative number where |inc_votes| > current votes (votes should never be less than 0)", () => {
     const testPatch = { inc_votes: -110 };
 
     return request(app)
@@ -235,12 +215,11 @@ describe("PATCH /api/articles/:article_id", () => {
           body: expect.any(String),
           topic: expect.any(String),
           created_at: expect.any(String),
-          votes: 0,
+          votes: -10,
           article_img_url: expect.any(String),
         });
       });
   });
-
   describe("400 errors", () => {
     test("400: responds with an error message when request body is in the wrong format (empty)", () => {
       const testPatch = {};

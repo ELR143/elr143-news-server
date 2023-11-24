@@ -53,10 +53,6 @@ exports.updateArticleById = (incrementVotes, id) => {
     if (article.rows.length === 0) {
       return Promise.reject();
     }
-    if (article.rows[0].votes < 0) {
-      article.rows[0].votes = 0;
-      return article.rows[0];
-    }
     return article.rows[0];
   });
 };
