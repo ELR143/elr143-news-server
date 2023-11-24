@@ -9,7 +9,6 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index");
-const { checkExists } = require("../models/utils-model");
 
 beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
@@ -104,6 +103,9 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
         expect(body.articles.length).not.toBe(0);
         body.articles.forEach((article) => {
           expect(article).toMatchObject({
@@ -116,10 +118,26 @@ describe("GET /api/articles", () => {
             article_img_url: expect.any(String),
             comment_count: expect.any(Number),
           });
-          expect(body.articles).toBeSortedBy("created_at", {
-            descending: true,
-          });
         });
+      });
+  });
+  test("200: accepts a topic query which responds with all articles of the given topic", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(1);
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("cats");
+        });
+      });
+  });
+  test("404: responds with an error message when query is invalid", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
       });
   });
   test("404: responds with an error message when path is misspelled", () => {

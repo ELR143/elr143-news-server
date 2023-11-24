@@ -38,8 +38,9 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
+  const { topic } = req.query;
   const comments = countComments();
-  const articles = selectAllArticles();
+  const articles = selectAllArticles(topic);
 
   Promise.all([comments, articles])
     .then(([comments, articles]) => {
