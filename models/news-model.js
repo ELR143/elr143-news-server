@@ -1,6 +1,7 @@
 const db = require("../db/connection");
 const format = require("pg-format");
 const endpoints = require("../endpoints.json");
+const { checkExists } = require("./utils-model");
 
 exports.selectAllTopics = () => {
   return db.query(`SELECT * FROM topics;`).then((topics) => {
@@ -22,12 +23,31 @@ exports.selectArticleById = (id) => {
   });
 };
 
-exports.selectAllArticles = () => {
-  return db
-    .query(`SELECT * FROM articles ORDER BY created_at DESC;`)
-    .then((articles) => {
+exports.selectAllArticles = (topic) => {
+  const queryValues = [];
+  let queryString = `SELECT * FROM articles `;
+
+  if (topic) {
+    return checkExists("topics", "slug", topic)
+      .then((checkedTopic) => {
+        if (!checkedTopic) {
+          queryValues.push(topic);
+          queryString += `WHERE topic = $1 `;
+        }
+      })
+      .then(() => {
+        queryString += `ORDER BY created_at DESC;`;
+        return db.query(queryString, queryValues);
+      })
+      .then((articles) => {
+        return articles.rows;
+      });
+  } else {
+    queryString += `ORDER BY created_at DESC;`;
+    return db.query(queryString).then((articles) => {
       return articles.rows;
     });
+  }
 };
 
 exports.countComments = () => {
