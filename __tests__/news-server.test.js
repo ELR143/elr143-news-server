@@ -9,6 +9,7 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index");
+const { checkExists } = require("../models/utils-model");
 
 beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
@@ -378,6 +379,28 @@ describe("PATCH /api/articles/:article_id", () => {
     return request(app)
       .patch("/api/articles/55975433")
       .send(testPatch)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 404 not found");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes comment from database", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("400: responds with an error message when the path is invalid", () => {
+    return request(app)
+      .delete("/api/comments/notAnId")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Error: 400 bad request");
+      });
+  });
+  test("404: responds with an error message when the comment_id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/23423")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");

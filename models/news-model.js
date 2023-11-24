@@ -89,3 +89,12 @@ exports.updateArticleById = (incrementVotes, id) => {
     return article.rows[0];
   });
 };
+
+exports.deleteCommentFromDatabase = (id) => {
+  const query = `DELETE FROM comments WHERE comment_id = $1 RETURNING *;`;
+  return db.query(query, [id]).then((response) => {
+    if (response.rows.length === 0) {
+      return Promise.reject();
+    }
+  });
+};
