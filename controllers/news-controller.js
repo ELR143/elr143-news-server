@@ -6,6 +6,7 @@ const {
   countComments,
   selectAllArticles,
   selectCommentsByArticleId,
+  insertNewComment,
   updateArticleById,
 } = require("../models/news-model");
 
@@ -70,6 +71,17 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .catch(next);
 };
 
+exports.postNewComment = (req, res, next) => {
+  const newComment = req.body;
+  const { article_id } = req.params;
+
+  insertNewComment(newComment, article_id)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const incrementVotes = req.body.inc_votes;
@@ -77,6 +89,7 @@ exports.patchArticleById = (req, res, next) => {
   updateArticleById(incrementVotes, article_id)
     .then((article) => {
       res.status(200).send({ article });
-    })
+  })
     .catch(next);
 };
+
