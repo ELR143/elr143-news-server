@@ -265,7 +265,7 @@ describe("POST /api/articles/:article_id/comments", () => {
           expect(body.msg).toBe("Error: 400 bad request");
         });
     });
-     test("400: responds with an error message when given a path that is invalid", () => {
+    test("400: responds with an error message when given a path that is invalid", () => {
       const testPost = {
         username: "butter_bridge",
         body: "This is a test!",
@@ -295,8 +295,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
   test("404: responds with an error message when given a valid path but the article_id doesn't exist", () => {
+    const testPost = {
+      username: "butter_bridge",
+      body: "This is a test!",
+    };
+
     return request(app)
-      .get("/api/articles/850/comments")
+      .post("/api/articles/850/comments")
+      .send(testPost)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");
@@ -367,8 +373,11 @@ describe("PATCH /api/articles/:article_id", () => {
     });
   });
   test("404: responds with an error message if passed an id that does not exist", () => {
+    const testPatch = { inc_votes: 5 };
+
     return request(app)
       .patch("/api/articles/55975433")
+      .send(testPatch)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Error: 404 not found");

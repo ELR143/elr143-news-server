@@ -77,9 +77,14 @@ exports.insertNewComment = (newComment, article_id) => {
 
 exports.updateArticleById = (incrementVotes, id) => {
   const query = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`;
+
+  if (!incrementVotes) {
+    return Promise.reject({ status: 400, msg: "Error: 400 bad request" });
+  }
+
   return db.query(query, [incrementVotes, id]).then((article) => {
     if (article.rows.length === 0) {
-      return Promise.reject();
+      return Promise.reject({ status: 404, msg: "Error: 404 not found" });
     }
     return article.rows[0];
   });

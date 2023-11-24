@@ -27,8 +27,6 @@ app.post("/api/articles/:article_id/comments", postNewComment);
 app.patch("/api/articles/:article_id", patchArticleById);
 
 app.all("*", pathDoesNotExist);
-
-app.all("*", pathDoesNotExist);
 app.use(handleCustomErrors);
 app.use(handleServerErrors);
 
