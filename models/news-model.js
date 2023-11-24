@@ -131,3 +131,27 @@ exports.selectAllUsers = () => {
     return usersArray.rows;
   });
 };
+
+
+
+// replace with:
+exports.countComments1 = () => {
+  return db
+    .query(
+      `SELECT articles.article_id, COUNT(comments.comment_id) AS comment_count 
+      FROM articles
+      LEFT JOIN comments
+      ON articles.article_id = comments.article_id 
+      GROUP BY articles.article_id;`
+    )
+    .then((commentCounts) => {
+      const commentCountReference = commentCounts.rows.reduce(
+        (current, comment) => {
+          current[comment.article_id] = comment.comment_count;
+          return current;
+        },
+        {}
+      );
+      return commentCountReference;
+    });
+};

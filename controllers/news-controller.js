@@ -10,6 +10,7 @@ const {
   updateArticleById,
   deleteCommentFromDatabase,
   selectAllUsers,
+  countComments1,
 } = require("../models/news-model");
 
 exports.getAllTopics = (req, res, next) => {
@@ -30,7 +31,7 @@ exports.getApi = (req, res, next) => {
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  const comments = countComments();
+  const comments = countComments1();
   const article = selectArticleById(article_id);
 
   Promise.all([comments, article])
@@ -47,7 +48,7 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
   const { topic } = req.query;
-  const comments = countComments();
+  const comments = countComments1();
   const articles = selectAllArticles(topic);
 
   Promise.all([comments, articles])
