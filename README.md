@@ -14,22 +14,13 @@ This is an API which accesses application data programmatically. It mimics the b
 1. In your terminal, navigate to your chosen directory, then copy and paste the following:
 `git clone https://github.com/ELR143/elr143-news-server.git`
 
-2. Run `npm install`
+2. Navigate to the repo with `cd elr143-news-server`
 
-3. Check your version of Node.js is v20.5.0 or higher --> `node -v`
+3. Run `npm install`
 
-4. Check the package.json file for the following **dependencies**. Ensure that your versions meet the minimums below:
-    - "dotenv": ^16.0.0
-    - "express": ^4.18.2
-    - "pg": ^8.7.3
-    - "pg-format": ^1.0.4
+4. Check your version of Node.js is v20.5.0 or higher --> `node -v`
 
-5. Check the package.json file for the following **devDependencies**. Ensure that your versions meet the minimums below:
-    - "husky": ^8.0.2
-    - "jest": ^27.5.1
-    - "jest-extended": ^2.0.0
-    - "jest-sorted": ^1.0.14
-    - "supertest": ^6.3.3
+5. Check your version of psql is 15.4 or higher --> `psql -V`
 
 6. Create the following files in your project folder:
     --> .env.development
